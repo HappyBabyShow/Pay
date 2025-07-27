@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Оплата</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .payment-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .payment-method {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      width: 330px;
+      box-sizing: border-box;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .payment-method h2 {
+      margin-top: 0;
+    }
+
+    .payment-method a,
+    .payment-method button {
+      margin-top: 15px;
+      display: inline-block;
+      padding: 12px 20px;
+      background-color: #0070ba;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      text-decoration: none;
+    }
+
+    .payment-method a:hover,
+    .payment-method button:hover {
+      background-color: #005fa3;
+    }
+
+    p {
+      margin: 0 0 10px 0;
+    }
+
+    .qr-code {
+      margin-top: 15px;
+    }
+
+    .qr-code img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .payment-method img {
+      max-width: 150px;
+      height: auto;
+      display: block;
+      margin: 10px auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>CHOOSE A METHOD </h1>
+  <div class="payment-container">
+
+    <!-- 🔹 Оплата картой / Google Pay / Apple Pay -->
+    <div class="payment-method" id="card-google-apple-pay">
+      <h2>Payment by card, Google Pay and Apple Pay</h2>
+
+      <!-- Stripe Buy Button -->
+      <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+      <stripe-buy-button
+        buy-button-id="buy_btn_1RpXs3LWvpIFJx0GAj5h2yGO"
+        publishable-key="pk_live_51RahBHLWvpIFJx0GgW5tZ173sGzJgcZXUJVmecoqEKxrzxGLp9EpqhK64wXFUGYXjU2sxCuddytGRsWOf0sgagr700HovZduI6">
+      </stripe-buy-button>
+    </div>
+
+  <!-- 🔹 Крипто -->
+  <div class="payment-method" id="crypto-pay">
+    <!-- Логотип крипто -->
+    <img src="crypto.png" alt="Crypto" style="height: 40px;">
+
+    <!-- Заголовок внутри блока -->
+   
+
+    <!-- Кнопка для пожертвования -->
+    <a href="https://nowpayments.io/donation?api_key=b27e38c7-a2d4-452e-967e-88171636d494"
+       target="_blank" rel="noreferrer noopener">
+      <img src="https://nowpayments.io/images/embeds/donation-button-white.svg"
+           alt="Cryptocurrency & Bitcoin donation button by NOWPayments" />
+    </a>
+  </div>
+
+
+    <!-- 🔹 MB WAY -->
+    <div class="payment-method" id="mbway-pay">
+      <img src="mbway.png" alt="MB WAY" style="max-width: 120px; margin-bottom: 10px;" />
+      <p><strong>+351 913 322 758</strong></p>
+      <div class="qr-code">
+        <p>PayPal</p>
+        <img src="photo_2025-07-27_23-57-17.jpg" alt="QR код PayPal">
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
