@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Человек-паук в Порту | Funshow PT</title>
+<script>
+window.__errs=[];window.__gameOk=false;
+function dbgShow(){var d=document.getElementById('dbg');if(!d)return;d.textContent='v4 · '+(window.__errs.length?'ошибка: '+window.__errs.join(' | '):'JS ок')}
+window.onerror=function(m,u,l,c){window.__errs.push(m+' ('+l+':'+c+')');dbgShow()};
+window.addEventListener('load',function(){if(!window.__gameOk)window.__errs.push('игра не запустилась');dbgShow()});
+</script>
+<style>
+:root{
+  --blue:#1f4e9e;--dark:#0b2a5c;--terra:#c8553d;--gold:#f2b632;--cream:#f7f3ea;--card:#fffdf8;--text:#13244a;
+  --tile:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'><rect width='48' height='48' fill='%23fdfcf7'/><rect x='.75' y='.75' width='46.5' height='46.5' fill='none' stroke='%231f4e9e' stroke-width='1.5'/><g fill='none' stroke='%231f4e9e' stroke-width='1.6'><circle cx='24' cy='24' r='9'/><path d='M24 6v9M24 33v9M6 24h9M33 24h9'/></g><g fill='%231f4e9e'><circle cx='24' cy='24' r='3'/><circle cx='6' cy='6' r='3'/><circle cx='42' cy='6' r='3'/><circle cx='6' cy='42' r='3'/><circle cx='42' cy='42' r='3'/></g></svg>");
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--cream);color:var(--text);line-height:1.5}
+header{position:relative;background:linear-gradient(rgba(11,42,92,.92),rgba(11,42,92,.92)),var(--tile);color:#fff;text-align:center;padding:56px 20px 58px}
+header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:22px;background:var(--tile);background-size:22px 22px;border-top:3px solid var(--gold)}
+header h1{margin:0 0 10px;font-size:clamp(28px,7vw,48px)}
+header p{margin:0 auto 24px;max-width:520px;opacity:.92;font-size:18px}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.nav a{background:#fff;color:var(--blue);padding:12px 20px;border-radius:999px;text-decoration:none;font-weight:700}
+.nav a.hot{background:var(--gold);color:var(--dark)}
+main{max-width:980px;margin:0 auto;padding:24px 16px 60px}
+section{margin-top:32px}
+h2{font-size:26px;margin:0 0 6px;color:var(--dark)}
+.sub{margin:0 0 16px;color:#4b5b82}
+.card{background:var(--card);border-radius:16px;box-shadow:0 4px 16px rgba(11,42,92,.12);padding:20px;border:2px solid #dbe4f6}
+
+.game-wrap{max-width:420px;margin:0 auto;text-align:center}
+.hud{display:flex;justify-content:space-between;font-weight:700;margin-bottom:8px}
+.frame{padding:10px;border-radius:16px;background:var(--tile);background-size:24px 24px;box-shadow:inset 0 0 0 2px var(--blue)}
+canvas{width:100%;height:auto;border-radius:8px;touch-action:none;background:#8ecbff;display:block;cursor:crosshair}
+.legend{font-size:14px;color:#4b5b82;margin:10px 0 0}
+.btn{display:inline-block;margin-top:12px;padding:14px 26px;border:0;border-radius:10px;background:var(--terra);color:#fff;font-size:17px;font-weight:700;cursor:pointer;text-decoration:none}
+.btn:hover{filter:brightness(.92)}
+.btn.blue{background:var(--blue)}
+
+form{display:grid;gap:12px}
+label{font-weight:600;font-size:15px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #bccbe8;border-radius:10px;font:inherit;background:#fff}
+textarea{min-height:80px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+.hint{font-size:14px;color:#4b5b82;margin:0}
+
+.payment-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.payment-method{background:var(--card);border-radius:16px;box-shadow:0 4px 16px rgba(11,42,92,.12);border:2px solid #dbe4f6;padding:20px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:200px}
+.payment-method h3{margin:0;color:var(--dark)}
+.payment-method img{max-width:150px;height:auto;display:block}
+.phone{font-size:22px;font-weight:800}
+footer{text-align:center;color:#4b5b82;padding:24px 16px 40px;font-size:14px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Человек-паук в Порту</h1>
+  <p>Танцы, фото и праздники для детей. Сыграй в игру, закажи видеопоздравление или поддержи шоу.</p>
+  <div class="nav">
+    <a href="#game">Игра</a>
+    <a href="#greeting">Поздравление</a>
+    <a class="hot" href="#pay">Поддержать</a>
+  </div>
+</header>
+
+<main>
+
+<section id="game">
+  <h2>Останови бандитов Порту</h2>
+  <p class="sub">Нажимай на бандитов. Герой внизу стреляет паутиной. У тебя 30 секунд.</p>
+  <div class="card game-wrap">
+    <div class="hud">
+      <span>Счёт: <span id="score">0</span></span>
+      <span>Время: <span id="time">30</span></span>
+      <span>Рекорд: <span id="best">0</span></span>
+    </div>
+    <div class="frame">
+      <canvas id="c" width="360" height="480" aria-label="Игра: стреляй паутиной в бандитов на мосту Дона Луиша в Порту"></canvas>
+    </div>
+    <p class="legend">Бандиты: Полво-вор, Чайка-воровка, Барон Бочка</p>
+    <button class="btn" id="start">Играть</button>
+  </div>
+</section>
+
+<section id="greeting">
+  <h2>Видеопоздравление от Человека-паука</h2>
+  <p class="sub">Видео от 10 до 30 секунд. Для дня рождения, Нового года или любого праздника.</p>
+  <div class="card">
+    <form id="gform">
+      <div class="row">
+        <div><label for="gname">Имя ребёнка</label><input id="gname" required placeholder="Например, Маша"></div>
+        <div><label for="gage">Возраст</label><input id="gage" type="number" min="1" max="18" placeholder="6"></div>
+      </div>
+      <div class="row">
+        <div><label for="gocc">Повод</label>
+          <select id="gocc">
+            <option>День рождения</option>
+            <option>Новый год</option>
+            <option>Рождество</option>
+            <option>Хорошая оценка</option>
+            <option>Другой повод</option>
+          </select>
+        </div>
+        <div><label for="gtype">Формат ответа</label>
+          <select id="gtype">
+            <option>Видео</option>
+            <option>Голосовое сообщение</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label for="glen">Длина видео: <span id="glenv">20</span> сек</label>
+        <input id="glen" type="range" min="10" max="30" step="5" value="20">
+      </div>
+      <div><label for="gtext">Что сказать ребёнку</label>
+        <textarea id="gtext" placeholder="Любит футбол, недавно пошёл в школу, боится собак"></textarea>
+      </div>
+      <button class="btn blue" type="submit">Отправить заявку в WhatsApp</button>
+      <p class="hint">Заявка уходит на WhatsApp артиста. Ответ приходит в этот же чат.</p>
+    </form>
+  </div>
+</section>
+
+<section id="pay">
+  <h2>Поддержать шоу</h2>
+  <p class="sub">Выбери удобный способ.</p>
+  <div class="payment-container">
+
+    <div class="payment-method" id="card-google-apple-pay">
+      <h3>Карта, Google Pay, Apple Pay</h3>
+      <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+      <stripe-buy-button
+        buy-button-id="buy_btn_1RpXs3LWvpIFJx0GAj5h2yGO"
+        publishable-key="pk_live_51RahBHLWvpIFJx0GgW5tZ173sGzJgcZXUJVmecoqEKxrzxGLp9EpqhK64wXFUGYXjU2sxCuddytGRsWOf0sgagr700HovZduI6">
+      </stripe-buy-button>
+    </div>
+
+    <div class="payment-method" id="crypto-pay">
+      <h3>Крипто</h3>
+      <img src="crypto.png" alt="Crypto" style="height:40px;width:auto">
+      <a href="https://nowpayments.io/donation?api_key=b27e38c7-a2d4-452e-967e-88171636d494" target="_blank" rel="noreferrer noopener">
+        <img src="https://nowpayments.io/images/embeds/donation-button-white.svg" alt="Cryptocurrency & Bitcoin donation button by NOWPayments">
+      </a>
+    </div>
+
+    <div class="payment-method" id="mbway-pay">
+      <h3>MB WAY</h3>
+      <img src="mbway.png" alt="MB WAY" style="max-width:120px">
+      <div class="phone" id="phone">+351 913 322 758</div>
+      <button class="btn blue" id="copy" type="button">Скопировать номер</button>
+    </div>
+
+    <div class="payment-method" id="paypal-pay">
+      <h3>PayPal</h3>
+      <a href="https://www.paypal.me/FunshowPT" target="_blank" rel="noopener noreferrer">
+        <img src="PayPalA.png" alt="PayPal">
+      </a>
+    </div>
+
+  </div>
+</section>
+
+</main>
+<footer>Funshow PT · Porto<div id="dbg"></div></footer>
+
+<script>
+/* ---------- копирование номера ---------- */
+document.getElementById('copy').addEventListener('click',function(){
+  var b=this,t='+351913322758';
+  function ok(){b.textContent='Скопировано';setTimeout(function(){b.textContent='Скопировать номер'},1800)}
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(ok,ok)}else{ok()}
+});
+
+/* ---------- видеопоздравление ---------- */
+var glen=document.getElementById('glen'),glenv=document.getElementById('glenv');
+glen.addEventListener('input',function(){glenv.textContent=glen.value});
+document.getElementById('gform').addEventListener('submit',function(e){
+  e.preventDefault();
+  var g=function(id){return document.getElementById(id).value.trim()};
+  var msg='Здравствуйте! Хочу заказать поздравление от Человека-паука.\n'+
+    'Имя ребёнка: '+g('gname')+'\n'+
+    (g('gage')?'Возраст: '+g('gage')+'\n':'')+
+    'Повод: '+g('gocc')+'\n'+
+    'Формат: '+g('gtype')+(g('gtype')==='Видео'?', '+g('glen')+' сек':'')+'\n'+
+    (g('gtext')?'Пожелания: '+g('gtext'):'');
+  window.open('https://wa.me/351913322758?text='+encodeURIComponent(msg),'_blank');
+});
+
+/* ---------- игра ---------- */
+(function(){
+  var cv=document.getElementById('c'),ctx=cv.getContext('2d');
+  var errShown=false;
+  function showErr(err){
+    if(errShown)return;errShown=true;
+    var p=document.createElement('p');p.className='legend';p.style.color='#c8553d';
+    p.textContent='Ошибка игры: '+(err&&err.message?err.message:err);
+    cv.parentNode.parentNode.insertBefore(p,cv.parentNode.nextSibling);
+  }
+  if(!ctx){showErr('canvas не поддерживается');return}
+  if(!CanvasRenderingContext2D.prototype.ellipse){
+    CanvasRenderingContext2D.prototype.ellipse=function(x,y,rx,ry,rot,a0,a1,ccw){this.save();this.translate(x,y);this.rotate(rot);this.scale(rx,ry);this.arc(0,0,1,a0,a1,ccw);this.restore()};
+  }
+  var W=cv.width,H=cv.height;
+  var scoreEl=document.getElementById('score'),timeEl=document.getElementById('time'),bestEl=document.getElementById('best'),startBtn=document.getElementById('start');
+  var running=false,score=0,timeLeft=30,bandits=[],webs=[],pops=[],last=0,spawnT=0,timerId=null,best=0;
+  var BX=W/2,BY=H-36;           // ноги героя
+  var aim=-Math.PI/2,recoil=0,px=null,py=null,heroImg=null;
+  try{best=parseInt(localStorage.getItem('spiderBest')||'0',10)||0}catch(e){}
+  bestEl.textContent=best;
+
+  /* своё фото героя: положи hero.png рядом с index.html (PNG с прозрачным фоном) */
+  var im=new Image();im.onload=function(){heroImg=im};im.src='hero.png';
+
+  /* ----- фон: Порту ----- */
+  var bgc=document.createElement('canvas');bgc.width=W;bgc.height=H;
+  try{(function(){
+    var c=bgc.getContext('2d');
+    var g=c.createLinearGradient(0,0,0,330);g.addColorStop(0,'#86c7ff');g.addColorStop(1,'#ffe8c4');
+    c.fillStyle=g;c.fillRect(0,0,W,H);
+    c.fillStyle='rgba(255,214,107,.9)';c.beginPath();c.arc(298,66,26,0,7);c.fill();
+    c.fillStyle='rgba(255,255,255,.85)';
+    [[60,60,26],[84,54,20],[40,66,16],[220,100,18],[240,96,24],[262,104,16]].forEach(function(o){c.beginPath();c.arc(o[0],o[1],o[2],0,7);c.fill()});
+    /* река Дору */
+    var r=c.createLinearGradient(0,320,0,430);r.addColorStop(0,'#3a8fd0');r.addColorStop(1,'#1f5fa8');
+    c.fillStyle=r;c.fillRect(0,320,W,110);
+    c.strokeStyle='rgba(255,255,255,.4)';c.lineWidth=2;
+    for(var wy=340;wy<420;wy+=18){c.beginPath();for(var wx=0;wx<=W;wx+=24){c.moveTo(wx,wy);c.quadraticCurveTo(wx+6,wy-4,wx+12,wy)}c.stroke()}
+    /* мост Дона Луиша I */
+    function archY(x){var t=(x+10)/380;return 330*(1-2*t+2*t*t)-20*t*(1-t)}
+    c.strokeStyle='#33445c';c.lineWidth=1.5;
+    for(var x=10;x<=350;x+=14){var ay=archY(x);if(ay<298){c.beginPath();c.moveTo(x,ay);c.lineTo(x,298);c.stroke()}if(ay<156){c.beginPath();c.moveTo(x,ay);c.lineTo(x,156);c.stroke()}}
+    for(var x2=10;x2<350;x2+=28){var a1=archY(x2),a2=archY(x2+28);if(a1<156){c.beginPath();c.moveTo(x2,a1);c.lineTo(x2+28,a2);c.stroke()}}
+    c.strokeStyle='#2a3a52';c.lineWidth=8;c.beginPath();c.moveTo(-10,330);c.quadraticCurveTo(180,-10,370,330);c.stroke();
+    c.fillStyle='#2a3a52';c.fillRect(0,155,W,8);c.fillRect(0,296,W,6);
+    c.fillStyle='#ffd23f';c.fillRect(190,143,36,12);c.fillStyle='#fff';c.fillRect(194,146,6,5);c.fillRect(204,146,6,5);c.fillRect(214,146,6,5); /* жёлтый трамвай */
+    /* дома Рибейры */
+    var cols=['#f4c542','#e8795a','#f2a0a8','#4fb3bf','#f6e3b4','#d98f4e','#9ec9f0'];
+    var hh=[70,92,60,84,74,96,64,88,72,80];
+    for(var i=0,hx=-6;hx<W;i++,hx+=38){
+      var h=hh[i%hh.length],top=432-h;
+      c.fillStyle=cols[i%cols.length];c.fillRect(hx,top,36,h);
+      c.fillStyle='#b8472f';c.beginPath();c.moveTo(hx-3,top);c.lineTo(hx+18,top-14);c.lineTo(hx+39,top);c.closePath();c.fill();
+      c.fillStyle='#1f4e9e';
+      for(var wy2=top+10;wy2<430-14;wy2+=22){c.fillRect(hx+6,wy2,8,12);c.fillRect(hx+22,wy2,8,12)}
+    }
+    /* набережная: калсада */
+    c.fillStyle='#efe9db';c.fillRect(0,432,W,H-432);
+    c.fillStyle='#46505f';
+    for(var yy=432,row=0;yy<H;yy+=10,row++){for(var xx=(row%2)*10;xx<W;xx+=20){c.fillRect(xx,yy,10,10)}}
+    c.fillStyle='rgba(11,42,92,.35)';c.fillRect(0,432,W,3);
+  })();}catch(err){showErr(err)}
+
+  /* ----- бандиты: оригинальные персонажи ----- */
+  var TYPES=['polvo','gaivota','barao'];
+  function spawn(){
+    bandits.push({type:TYPES[Math.floor(Math.random()*3)],x:40+Math.random()*(W-80),y:100+Math.random()*(H-300),life:1.4,max:1.4,hit:false});
+  }
+  function maskBand(y){ctx.fillStyle='#111';ctx.fillRect(-16,y,32,8);ctx.fillStyle='#fff';ctx.fillRect(-10,y+1,7,5);ctx.fillRect(3,y+1,7,5);ctx.fillStyle='#000';ctx.fillRect(-7,y+2,3,3);ctx.fillRect(6,y+2,3,3)}
+  function drawPolvo(){
+    ctx.strokeStyle='#ff7a45';ctx.lineWidth=7;ctx.lineCap='round';
+    for(var i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(i*8,14);ctx.quadraticCurveTo(i*13+6,36,i*10-4,54);ctx.stroke()}
+    ctx.fillStyle='#ff7a45';ctx.beginPath();ctx.arc(0,0,25,Math.PI,0);ctx.lineTo(25,16);ctx.lineTo(-25,16);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#ffb08a';[[-10,-10],[8,-14],[14,-2]].forEach(function(p){ctx.beginPath();ctx.arc(p[0],p[1],3,0,7);ctx.fill()});
+    maskBand(-4);
+    ctx.fillStyle='#1f4e9e';ctx.fillRect(-18,-24,36,6);ctx.fillRect(-10,-34,20,12); /* кепка */
+  }
+  function drawGaivota(){
+    ctx.fillStyle='#e9eef5';ctx.beginPath();ctx.ellipse(0,26,22,28,0,0,7);ctx.fill();
+    ctx.fillStyle='#8c9bb0';ctx.beginPath();ctx.ellipse(-20,26,9,20,.25,0,7);ctx.fill();ctx.beginPath();ctx.ellipse(20,26,9,20,-.25,0,7);ctx.fill();
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(0,-8,15,0,7);ctx.fill();
+    ctx.fillStyle='#ffb320';ctx.beginPath();ctx.moveTo(-5,-4);ctx.lineTo(5,-4);ctx.lineTo(0,10);ctx.closePath();ctx.fill();
+    maskBand(-16);
+    ctx.fillStyle='#ffb320';ctx.fillRect(-9,52,4,6);ctx.fillRect(5,52,4,6);
+    ctx.fillStyle='#8a5a2b';ctx.beginPath();ctx.arc(22,40,9,0,7);ctx.fill(); /* мешок */
+    ctx.fillStyle='#ffd23f';ctx.font='bold 10px Arial';ctx.textAlign='center';ctx.fillText('€',22,44);
+  }
+  function drawBarao(){
+    ctx.fillStyle='#8a5a2b';ctx.fillRect(-20,12,40,44);
+    ctx.fillStyle='#4a2f14';ctx.fillRect(-20,20,40,4);ctx.fillRect(-20,44,40,4);
+    ctx.fillStyle='#f2c9a0';ctx.beginPath();ctx.arc(0,-4,16,0,7);ctx.fill();
+    maskBand(-10);
+    ctx.fillStyle='#3a2410';ctx.beginPath();ctx.ellipse(-8,5,9,4,.2,0,7);ctx.fill();ctx.beginPath();ctx.ellipse(8,5,9,4,-.2,0,7);ctx.fill(); /* усы */
+    ctx.fillStyle='#111';ctx.fillRect(-20,-20,40,6);ctx.fillRect(-12,-36,24,18); /* цилиндр */
+    ctx.fillStyle='#c8553d';ctx.fillRect(-12,-24,24,4);
+  }
+  function drawBandit(b){
+    var k=Math.min(1,b.life/0.25,(b.max-b.life)/0.15+0.3);
+    var s=0.6+0.4*Math.max(0,Math.min(1,k));
+    ctx.save();ctx.translate(b.x,b.y);ctx.scale(s,s);
+    if(b.hit)ctx.globalAlpha=.85;
+    if(b.type==='polvo')drawPolvo();else if(b.type==='gaivota')drawGaivota();else drawBarao();
+    if(b.hit){
+      ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.globalAlpha=1;
+      for(var j=0;j<6;j++){ctx.beginPath();ctx.moveTo(-28,-30+j*14);ctx.lineTo(28,-24+j*14);ctx.stroke()}
+      for(var m=-2;m<=2;m++){ctx.beginPath();ctx.moveTo(m*11,-36);ctx.lineTo(m*11,58);ctx.stroke()}
+    }
+    ctx.restore();
+  }
+
+  /* ----- герой внизу (оригинальный человечек, либо твоё фото hero.png) ----- */
+  function handPos(){
+    if(heroImg)return {x:BX+14,y:BY-72};
+    var sx=BX+10,sy=BY-44,len=20-recoil*40;
+    return {x:sx+Math.cos(aim)*len,y:sy+Math.sin(aim)*len};
+  }
+  function drawHero(){
+    if(heroImg){var h=100,w=heroImg.width*h/heroImg.height;ctx.drawImage(heroImg,BX-w/2,BY-h+4,w,h);return}
+    ctx.fillStyle='rgba(0,0,0,.2)';ctx.beginPath();ctx.ellipse(BX,BY+2,18,5,0,0,7);ctx.fill();
+    ctx.fillStyle='#087f7b';ctx.fillRect(BX-9,BY-22,7,20);ctx.fillRect(BX+2,BY-22,7,20);
+    ctx.fillStyle='#ffd23f';ctx.fillRect(BX-10,BY-5,9,6);ctx.fillRect(BX+1,BY-5,9,6);
+    ctx.fillStyle='#0aa5a0';ctx.fillRect(BX-12,BY-48,24,28);
+    ctx.fillStyle='#ffd23f';ctx.fillRect(BX-12,BY-26,24,4);ctx.beginPath();ctx.arc(BX,BY-38,3.5,0,7);ctx.fill();
+    ctx.strokeStyle='#0aa5a0';ctx.lineCap='round';ctx.lineWidth=6;
+    ctx.beginPath();ctx.moveTo(BX-11,BY-44);ctx.lineTo(BX-15,BY-26);ctx.stroke();
+    var hp=handPos();
+    ctx.beginPath();ctx.moveTo(BX+10,BY-44);ctx.lineTo(hp.x,hp.y);ctx.stroke();
+    ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.arc(hp.x,hp.y,4.5,0,7);ctx.fill();
+    ctx.fillStyle='#0aa5a0';ctx.beginPath();ctx.arc(BX,BY-58,11,0,7);ctx.fill();
+    ctx.fillStyle='#fff';ctx.fillRect(BX-11,BY-62,22,8);
+    ctx.fillStyle='#0b2a5c';ctx.beginPath();ctx.ellipse(BX-4,BY-58,3,2.2,0,0,7);ctx.fill();ctx.beginPath();ctx.ellipse(BX+4,BY-58,3,2.2,0,0,7);ctx.fill();
+    if(recoil>0){ /* вспышка выстрела */
+      ctx.strokeStyle='#fff';ctx.lineWidth=2;
+      for(var i=0;i<6;i++){var a=i*Math.PI/3;ctx.beginPath();ctx.moveTo(hp.x+Math.cos(a)*6,hp.y+Math.sin(a)*6);ctx.lineTo(hp.x+Math.cos(a)*(10+recoil*30),hp.y+Math.sin(a)*(10+recoil*30));ctx.stroke()}
+    }
+  }
+  function drawCross(){
+    if(!running||px===null)return;
+    ctx.strokeStyle='rgba(216,31,38,.9)';ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(px,py,11,0,7);ctx.moveTo(px-17,py);ctx.lineTo(px-6,py);ctx.moveTo(px+6,py);ctx.lineTo(px+17,py);ctx.moveTo(px,py-17);ctx.lineTo(px,py-6);ctx.moveTo(px,py+6);ctx.lineTo(px,py+17);ctx.stroke();
+  }
+
+  function frameInner(t){
+    var dt=Math.min(.05,(t-last)/1000);last=t;
+    ctx.drawImage(bgc,0,0);
+    recoil=Math.max(0,recoil-dt);
+    if(running){
+      spawnT-=dt;
+      if(spawnT<=0){spawn();spawnT=.55+Math.random()*.5}
+      bandits.forEach(function(b){b.life-=dt});
+      bandits=bandits.filter(function(b){return b.life>0});
+    }
+    bandits.forEach(drawBandit);
+    webs.forEach(function(w){
+      w.t-=dt;var a=Math.max(0,w.t/.25);
+      ctx.strokeStyle='rgba(255,255,255,'+a+')';ctx.lineWidth=3;
+      ctx.beginPath();ctx.moveTo(w.ox,w.oy);ctx.lineTo(w.x,w.y);ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,'+a+')';ctx.beginPath();ctx.arc(w.x,w.y,6,0,7);ctx.fill();
+    });
+    webs=webs.filter(function(w){return w.t>0});
+    drawHero();
+    pops.forEach(function(p){p.t-=dt;p.y-=30*dt;ctx.globalAlpha=Math.max(0,p.t/.6);ctx.fillStyle='#c8553d';ctx.font='bold 22px system-ui,Arial';ctx.textAlign='center';ctx.fillText('+1',p.x,p.y);ctx.globalAlpha=1});
+    pops=pops.filter(function(p){return p.t>0});
+    drawCross();
+    if(!running){
+      ctx.fillStyle='rgba(11,42,92,.6)';ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='bold 26px system-ui,Arial';
+      ctx.fillText(score?'Счёт: '+score:'Готов?',W/2,H/2-6);
+      ctx.font='16px system-ui,Arial';ctx.fillText('Нажми «Играть»',W/2,H/2+22);
+    }
+  }
+  function frame(t){
+    try{frameInner(t)}catch(err){showErr(err)}
+    requestAnimationFrame(frame);
+  }
+  function pos(e){
+    var r=cv.getBoundingClientRect();
+    return {x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};
+  }
+  function setAim(x,y){
+    var a=Math.atan2(y-(BY-44),x-(BX+10));
+    aim=Math.max(-Math.PI+.15,Math.min(-.15,a<0?a:(x<BX?-Math.PI+.15:-.15)));
+  }
+  cv.addEventListener('pointermove',function(e){var p=pos(e);px=p.x;py=p.y;setAim(p.x,p.y)});
+  cv.addEventListener('pointerleave',function(){px=null});
+  cv.addEventListener('pointerdown',function(e){
+    if(!running)return;
+    e.preventDefault();
+    var p=pos(e);px=p.x;py=p.y;setAim(p.x,p.y);
+    recoil=.15;
+    var h=handPos();
+    webs.push({ox:h.x,oy:h.y,x:p.x,y:p.y,t:.25});
+    for(var i=bandits.length-1;i>=0;i--){
+      var b=bandits[i];
+      if(!b.hit&&Math.abs(p.x-b.x)<32&&p.y>b.y-40&&p.y<b.y+56){
+        b.hit=true;b.life=Math.min(b.life,.35);score++;scoreEl.textContent=score;pops.push({x:b.x,y:b.y-40,t:.6});break;
+      }
+    }
+  });
+  function end(){
+    running=false;clearInterval(timerId);startBtn.textContent='Играть ещё раз';
+    if(score>best){best=score;bestEl.textContent=best;try{localStorage.setItem('spiderBest',best)}catch(e){}}
+  }
+  startBtn.addEventListener('click',function(){
+    score=0;timeLeft=30;bandits=[];webs=[];pops=[];spawnT=0;aim=-Math.PI/2;
+    scoreEl.textContent=0;timeEl.textContent=30;running=true;startBtn.textContent='Идёт игра';
+    clearInterval(timerId);
+    timerId=setInterval(function(){timeLeft--;timeEl.textContent=timeLeft;if(timeLeft<=0)end()},1000);
+  });
+  requestAnimationFrame(frame);
+  window.__gameOk=true;
+})();
+</script>
+</body>
+</html>
