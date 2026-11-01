@@ -188,6 +188,17 @@ document.getElementById('gform').addEventListener('submit',function(e){
 /* ---------- игра ---------- */
 (function(){
   var cv=document.getElementById('c'),ctx=cv.getContext('2d');
+  var errShown=false;
+  function showErr(err){
+    if(errShown)return;errShown=true;
+    var p=document.createElement('p');p.className='legend';p.style.color='#c8553d';
+    p.textContent='Ошибка игры: '+(err&&err.message?err.message:err);
+    cv.parentNode.parentNode.insertBefore(p,cv.parentNode.nextSibling);
+  }
+  if(!ctx){showErr('canvas не поддерживается');return}
+  if(!CanvasRenderingContext2D.prototype.ellipse){
+    CanvasRenderingContext2D.prototype.ellipse=function(x,y,rx,ry,rot,a0,a1,ccw){this.save();this.translate(x,y);this.rotate(rot);this.scale(rx,ry);this.arc(0,0,1,a0,a1,ccw);this.restore()};
+  }
   var W=cv.width,H=cv.height;
   var scoreEl=document.getElementById('score'),timeEl=document.getElementById('time'),bestEl=document.getElementById('best'),startBtn=document.getElementById('start');
   var running=false,score=0,timeLeft=30,bandits=[],webs=[],pops=[],last=0,spawnT=0,timerId=null,best=0;
@@ -201,7 +212,7 @@ document.getElementById('gform').addEventListener('submit',function(e){
 
   /* ----- фон: Порту ----- */
   var bgc=document.createElement('canvas');bgc.width=W;bgc.height=H;
-  (function(){
+  try{(function(){
     var c=bgc.getContext('2d');
     var g=c.createLinearGradient(0,0,0,330);g.addColorStop(0,'#86c7ff');g.addColorStop(1,'#ffe8c4');
     c.fillStyle=g;c.fillRect(0,0,W,H);
@@ -236,7 +247,7 @@ document.getElementById('gform').addEventListener('submit',function(e){
     c.fillStyle='#46505f';
     for(var yy=432,row=0;yy<H;yy+=10,row++){for(var xx=(row%2)*10;xx<W;xx+=20){c.fillRect(xx,yy,10,10)}}
     c.fillStyle='rgba(11,42,92,.35)';c.fillRect(0,432,W,3);
-  })();
+  })();}catch(err){showErr(err)}
 
   /* ----- бандиты: оригинальные персонажи ----- */
   var TYPES=['polvo','gaivota','barao'];
@@ -317,7 +328,7 @@ document.getElementById('gform').addEventListener('submit',function(e){
     ctx.beginPath();ctx.arc(px,py,11,0,7);ctx.moveTo(px-17,py);ctx.lineTo(px-6,py);ctx.moveTo(px+6,py);ctx.lineTo(px+17,py);ctx.moveTo(px,py-17);ctx.lineTo(px,py-6);ctx.moveTo(px,py+6);ctx.lineTo(px,py+17);ctx.stroke();
   }
 
-  function frame(t){
+  function frameInner(t){
     var dt=Math.min(.05,(t-last)/1000);last=t;
     ctx.drawImage(bgc,0,0);
     recoil=Math.max(0,recoil-dt);
@@ -345,6 +356,9 @@ document.getElementById('gform').addEventListener('submit',function(e){
       ctx.fillText(score?'Счёт: '+score:'Готов?',W/2,H/2-6);
       ctx.font='16px system-ui,Arial';ctx.fillText('Нажми «Играть»',W/2,H/2+22);
     }
+  }
+  function frame(t){
+    try{frameInner(t)}catch(err){showErr(err)}
     requestAnimationFrame(frame);
   }
   function pos(e){
@@ -355,22 +369,4 @@ document.getElementById('gform').addEventListener('submit',function(e){
     var a=Math.atan2(y-(BY-44),x-(BX+10));
     aim=Math.max(-Math.PI+.15,Math.min(-.15,a<0?a:(x<BX?-Math.PI+.15:-.15)));
   }
-  cv.addEventListener('pointermove',function(e){var p=pos(e);px=p.x;py=p.y;setAim(p.x,p.y)});
-  cv.addEventListener('pointerleave',function(){px=null});
-  cv.addEventListener('pointerdown',function(e){
-    if(!running)return;
-    e.preventDefault();
-    var p=pos(e);px=p.x;py=p.y;setAim(p.x,p.y);
-    recoil=.15;
-    var h=handPos();
-    webs.push({ox:h.x,oy:h.y,x:p.x,y:p.y,t:.25});
-    for(var i=bandits.length-1;i>=0;i--){
-      var b=bandits[i];
-      if(!b.hit&&Math.abs(p.x-b.x)<32&&p.y>b.y-40&&p.y<b.y+56){
-        b.hit=true;b.life=Math.min(b.life,.35);score++;scoreEl.textContent=score;pops.push({x:b.x,y:b.y-40,t:.6});break;
-      }
-    }
-  });
-  function end(){
-    running=false;clearInterval(timerId);startBtn.textContent='Играть ещё раз';
-    if(score>best){best=s
+  cv.addEventListener('pointermove',function(e){var p=pos
